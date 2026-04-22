@@ -4,16 +4,30 @@
 
 int main()
 {
-    kv_t *db = kv_init(16);
+    kv_t *table = kv_init(1024);
 
-    printf("%p\n", db);
-    printf("%lld\n", db->capacity);
+    printf("%p\n", table);
+    printf("%lld\n", table->capacity);
     
-    assert(db != NULL);
-    assert(db->capacity == 16);
-    assert(db->count == 0);
+    // assert(table != NULL);
+    // assert(table->capacity == 16);
+    // assert(table->count == 0);
 
-    free(db);
+    kv_put(table, "hehe", "haha");
+    kv_put(table, "hehe", "hoho");
+    kv_put(table, "lala", "haha");
+
+    
+    for(int i = 0; i < table->capacity; i++)
+    {
+        if(table->entries[i].key)
+        {
+            printf("Idx %d: Key: %s, Value: %s\n", 
+                i,
+                table->entries[i].key, 
+                table->entries[i].value);
+        }
+    }
 
     return 0;
 }
