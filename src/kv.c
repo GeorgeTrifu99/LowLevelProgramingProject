@@ -33,14 +33,14 @@ size_t hash(char *val, int capacity)
     return hash % capacity;
 }
 
-// fn returns the index of the key if it exists, otherwise -1 and on not found -2
+// fn returns 0 on success, -1 on error, -2 if db is full
 int kv_put(kv_t *db, char *key, char *value)
 {
     if(!db || !key || !value) return -1;
 
     size_t idx = hash(key, db->capacity);
 
-    for(int i = 0; i < db->capacity - 1; i++)
+    for(int i = 0; i < db->capacity; i++)
     {
         size_t real_idx = (idx + i) % db->capacity;
         kv_entry_t *entry = &db->entries[real_idx];
@@ -50,8 +50,9 @@ int kv_put(kv_t *db, char *key, char *value)
         {
             char *new_value = strdup(value); // duplicate the value to avoid dangling pointer issues
             if(!new_value) return -1; // memory allocation failed
+            free(entry->value);
             entry->value = new_value;
-            return real_idx;
+            return 0;
         }
 
         //land in a slot that is empty, null or tombstone
@@ -68,7 +69,7 @@ int kv_put(kv_t *db, char *key, char *value)
             entry->value = new_value;
             entry->key = new_key;
             db->count++;
-            return real_idx;
+            return 0;
         }
     }
 
