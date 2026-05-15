@@ -9,6 +9,7 @@ int main()
     printf("%p\n", table);
     printf("%lld\n", table->capacity);
     
+    // this is for debugging purposes
     // assert(table != NULL);
     // assert(table->capacity == 16);
     // assert(table->count == 0);
