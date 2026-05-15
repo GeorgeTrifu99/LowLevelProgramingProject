@@ -40,7 +40,7 @@ int kv_put(kv_t *db, char *key, char *value)
 
     size_t idx = hash(key, db->capacity);
 
-    for(int i = 0; i < db->capacity; i++)
+    for(int i = 0; i < db->capacity-1; i++)
     {
         size_t real_idx = (idx + i) % db->capacity;
         kv_entry_t *entry = &db->entries[real_idx];
@@ -52,7 +52,7 @@ int kv_put(kv_t *db, char *key, char *value)
             if(!new_value) return -1; // memory allocation failed
             free(entry->value);
             entry->value = new_value;
-            return 0;
+            return real_idx;
         }
 
         //land in a slot that is empty, null or tombstone
@@ -69,9 +69,31 @@ int kv_put(kv_t *db, char *key, char *value)
             entry->value = new_value;
             entry->key = new_key;
             db->count++;
-            return 0;
+            return real_idx;
         }
     }
 
     return -2; // db is full
+}
+
+// fn returns the pointer to the key, and null if not found
+char* kv_get(kv_t* db,  char* key)
+{
+    if(!db || !key) return NULL;
+
+    size_t idx = hash(key, db->capacity);
+
+    for(int i = 0; i < db->capacity-1; i++)
+    {
+        size_t real_idx = (idx + i) % db->capacity;
+        kv_entry_t *entry = &db->entries[real_idx];
+        if(entry->key == NULL) return NULL; // key not found
+
+        // find and entry and the keys match
+        if(entry->key && entry->key != (void*)TOMBSTONE && strcmp(entry->key, key) == 0)
+        {
+            return entry->value;
+        }
+    }
+    return NULL; // key not found
 }
