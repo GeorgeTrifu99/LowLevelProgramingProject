@@ -2,8 +2,6 @@
 #include <string.h>
 #include <stdlib.h>
 
-#define TOMBSTONE ((char*)0x1)
-
 kv_t *kv_init(size_t capacity)
 {
     if(capacity == 0) return NULL;
@@ -22,7 +20,7 @@ kv_t *kv_init(size_t capacity)
 
 size_t hash(char *val, int capacity)
 {
-    size_t hash = 0x123123deadbeef;
+    size_t hash = 0x13371337deadbeef;
 
     while(*val)
     {
@@ -40,11 +38,11 @@ int kv_put(kv_t *db, char *key, char *value)
 {
     if(!db || !key || !value) return -1;
 
-    size_t index = hash(key, db->capacity);
+    size_t idx = hash(key, db->capacity);
 
-    for(size_t i = 0; i < db->capacity - 1; i++)
+    for(int i = 0; i < db->capacity - 1; i++)
     {
-        size_t real_idx = (index + i) % db->capacity;
+        size_t real_idx = (idx + i) % db->capacity;
         kv_entry_t *entry = &db->entries[real_idx];
 
         // found the slot occupied by the same key, update the value

@@ -6,8 +6,8 @@ int main()
 {
     kv_t *table = kv_init(1024);
 
-    printf("%p\n", table);
-    printf("%lld\n", table->capacity);
+    printf("%p\n", (void*)table);
+    printf("%zu\n", table->capacity);
     
     // this is for debugging purposes
     // assert(table != NULL);
@@ -21,7 +21,7 @@ int main()
     
     for(int i = 0; i < table->capacity; i++)
     {
-        if(table->entries[i].key)
+        if(table->entries[i].key && table->entries[i].key != (void*)TOMBSTONE)
         {
             printf("Idx %d: Key: %s, Value: %s\n", 
                 i,
