@@ -50,7 +50,7 @@ int kv_put(kv_t *db, char *key, char *value)
         {
             char *new_value = strdup(value); // duplicate the value to avoid dangling pointer issues
             if(!new_value) return -1; // memory allocation failed
-            free(entry->value);
+            free(entry->value); // we need to free the old value to avoid memory leaks
             entry->value = new_value;
             return 0;
         }
@@ -125,4 +125,25 @@ int kv_delete(kv_t *db, char *key)
         }
     }
     return -1; // key not found
+}
+
+int kv_free(kv_t *db)
+{
+    if(!db) return -1;
+
+    for(size_t i = 0; i < db->capacity-1; i++)
+    {
+        kv_entry_t *e = &db->entries[i];
+        if(e->key && e->key != (void*)TOMBSTONE)
+        {
+            free(e->key);
+            free(e->value);
+            e->key = NULL;
+            e->value = NULL;
+            db->count--;
+        }
+    }
+    free(db->entries);
+    free(db);
+    return 0;
 }

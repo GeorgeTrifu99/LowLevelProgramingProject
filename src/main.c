@@ -30,6 +30,12 @@ int main()
 
     printf("%s %s %s\n", val1, val2, val3);
 
+    kv_free(table);
+    table = NULL;
+
+    val1 = kv_get(table, "hehe");
+    printf("%d\n", val1);
+
 
     
     // for(int i = 0; i < table->capacity; i++)
