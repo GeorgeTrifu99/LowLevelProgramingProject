@@ -1,3 +1,4 @@
+#define _GNU_SOURCE
 #include "kv.h"
 #include <string.h>
 #include <stdlib.h>
@@ -40,7 +41,7 @@ int kv_put(kv_t *db, char *key, char *value)
 
     size_t idx = hash(key, db->capacity);
 
-    for(int i = 0; i < db->capacity-1; i++)
+    for(size_t i = 0; i < db->capacity-1; i++)
     {
         size_t real_idx = (idx + i) % db->capacity;
         kv_entry_t *entry = &db->entries[real_idx];
@@ -83,7 +84,7 @@ char* kv_get(kv_t* db,  char* key)
 
     size_t idx = hash(key, db->capacity);
 
-    for(int i = 0; i < db->capacity-1; i++)
+    for(size_t i = 0; i < db->capacity-1; i++)
     {
         size_t real_idx = (idx + i) % db->capacity;
         kv_entry_t *entry = &db->entries[real_idx];
@@ -106,7 +107,7 @@ int kv_delete(kv_t *db, char *key)
 
     size_t idx = hash(key, db->capacity);
 
-    for(int i = 0; i < db->capacity-1; i++)
+    for(size_t i = 0; i < db->capacity-1; i++)
     {
         size_t real_idx = (idx + i) % db->capacity;
         kv_entry_t *entry = &db->entries[real_idx];
