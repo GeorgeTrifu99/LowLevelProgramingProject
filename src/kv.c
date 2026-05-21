@@ -33,7 +33,7 @@ size_t hash(char *val, int capacity)
     return hash % capacity;
 }
 
-// fn returns 0 on success, -1 on error, -2 if db is full
+// fn returns the index of the key on success, -1 on error, -2 if db is full
 int kv_put(kv_t *db, char *key, char *value)
 {
     if(!db || !key || !value) return -1;
