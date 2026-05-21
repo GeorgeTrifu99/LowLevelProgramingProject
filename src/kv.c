@@ -52,7 +52,7 @@ int kv_put(kv_t *db, char *key, char *value)
             if(!new_value) return -1; // memory allocation failed
             free(entry->value);
             entry->value = new_value;
-            return real_idx;
+            return 0;
         }
 
         //land in a slot that is empty, null or tombstone
@@ -69,7 +69,7 @@ int kv_put(kv_t *db, char *key, char *value)
             entry->value = new_value;
             entry->key = new_key;
             db->count++;
-            return real_idx;
+            return 0;
         }
     }
 
